@@ -1,0 +1,134 @@
+//Infix-Postfix conversion
+#include<stdio.h>
+#include<ctype.h>
+char stack[100];
+int top = -1;
+void push(char x)
+{
+    stack[++top] = x;
+}
+
+char pop()
+{
+    if(top == -1)
+        return -1;
+    else
+        return stack[top--];
+}
+
+int priority(char x)
+{
+    if(x == '+' || x == '-')
+        return 1;
+    if(x == '*' || x == '/')
+        return 2;
+    return 0;
+}
+
+int main()
+{
+    char exp[100];
+    char *e, x;
+    printf("Enter the expression : ");
+    scanf("%s",exp);
+    printf("\n");
+    e = exp;
+    
+    while(*e != '\0')
+    {
+        if(isalnum(*e))
+            printf("%c ",*e);
+        else if(*e == '(')
+            push(*e);
+        else if(*e == ')')
+        {
+            while((x = pop()) != '(')
+                printf("%c ", x);
+        }
+        else
+        {
+            while(priority(stack[top]) >= priority(*e))
+                printf("%c ",pop());
+            push(*e);
+        }
+        e++;
+    }
+    
+    while(top != -1)
+    {
+        printf("%c ",pop());
+    }
+	return 0;
+}
+
+
+//Postfix Eval
+
+/*Program for Postfix Evaluation */
+
+#include<stdio.h>
+#include<string.h>
+#include<math.h>
+#define MAX 50
+int stack[MAX];
+char post[MAX];
+int top=-1;
+void push(int);
+int pop();
+void calculator(char);
+void main()
+{
+ int i=0;
+ printf("Insert a postfix expression :: ");
+ gets(post);
+ while(post[i]!='\0')
+ {
+  if(post[i]>='0' && post[i]<='9')
+  {
+   push(i);
+  }
+  if(post[i]=='+' || post[i]=='-' || post[i]=='*' || 
+  post[i]=='/' || post[i]=='^')
+  {
+   calculator(post[i]);
+  }
+  i++;
+ }// end of while
+ 
+ printf("\nResult  after evalution :: %d",stack[top]);
+} //end of main
+
+//
+void push(int tmp)
+{
+ top++;
+ stack[top]=(int)(post[tmp]-48);
+}
+int pop()
+{
+	return (stack[top--]);
+}
+
+void calculator(char c)
+{
+ int a,b,ans;
+ a=pop();
+ b=pop();
+ 
+ switch(c)
+ {
+  case '+':   ans=b+a;
+  				break;
+  case '-':   ans=b-a;
+  			    break;
+  case '*':   ans=b*a;
+  			    break;
+  case '/':   ans=b/a;
+  				break;
+  case '^':   ans=pow(b,a);
+  				break;
+  //default:  ans=0;
+ }
+ top++;
+ stack[top]=ans;
+}
